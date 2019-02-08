@@ -1,4 +1,6 @@
-package lab;
+package lab.server;
+
+import lab.requests.PutRequest;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -6,9 +8,10 @@ import java.net.Socket;
 import java.util.concurrent.ForkJoinPool;
 
 public class DBServer {
+    private static final String VERSION = "0.1";
     private volatile boolean started = false;
 
-    private ForkJoinPool pool = new ForkJoinPool(4);
+    private final ForkJoinPool pool = new ForkJoinPool(4);
 
     private final Database database = new Database();
 
@@ -20,6 +23,7 @@ public class DBServer {
             e.printStackTrace();
             return;
         }
+        putSystemValues();
         started = true;
         System.out.println(DBServer.class.getName() + " started");
         while (true) {
@@ -32,6 +36,10 @@ public class DBServer {
             }
             handle(clientSocket);
         }
+    }
+
+    private void putSystemValues() {
+        database.put(new PutRequest("ndb_version", VERSION));
     }
 
     private void handle(Socket clientSocket) {

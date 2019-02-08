@@ -1,5 +1,7 @@
 package lab;
 
+import lab.client.DBClient;
+import lab.server.DBServer;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,7 @@ public class DBServerTest {
     }
 
     @RepeatedTest(1)
-    public void client() {
+    public void crud() {
         DBClient client = new DBClient();
         client.startConnection("127.0.0.1", 4444);
         System.out.println(client.sendMessage("put x 10"));

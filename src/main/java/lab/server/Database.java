@@ -1,4 +1,4 @@
-package lab;
+package lab.server;
 
 import lab.requests.PutRequest;
 import lab.requests.DelRequest;
@@ -9,15 +9,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Database {
     private final ConcurrentHashMap<String, String> storage = new ConcurrentHashMap<>();
 
-    public void create(PutRequest putRequest) {
+    public void put(PutRequest putRequest) {
         storage.put(putRequest.getKey(), putRequest.getValue());
     }
 
-    public String read(GetRequest readTask) {
+    public String get(GetRequest readTask) {
         return storage.get(readTask.getKey());
     }
 
-    public String delete(DelRequest deleteTask) {
+    public String del(DelRequest deleteTask) {
         return storage.remove(deleteTask.getKey());
     }
 }

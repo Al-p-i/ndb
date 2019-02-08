@@ -1,11 +1,10 @@
-package lab;
+package lab.server;
 
 import lab.requests.DelRequest;
 import lab.requests.GetRequest;
 import lab.requests.PutRequest;
 import lab.requests.UnknownRequest;
 
-import javax.xml.crypto.Data;
 import java.io.PrintWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,16 +23,16 @@ public class RequestParser {
     String parseLine(PrintWriter out, String line) {
         GetRequest getRequest = parseRead(line);
         if (getRequest != null) {
-            return database.read(getRequest);
+            return database.get(getRequest);
         }
         PutRequest putRequest = parseCreate(line);
         if (putRequest != null) {
-            database.create(putRequest);
+            database.put(putRequest);
             return putRequest.getKey() + " <= " + putRequest.getValue();
         }
         DelRequest delRequest = parseDelete(line);
         if (delRequest != null) {
-            String deleted = database.delete(delRequest);
+            String deleted = database.del(delRequest);
             if (deleted == null) {
                 out.println("no such key " + delRequest.getKey());
             }
