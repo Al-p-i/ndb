@@ -1,4 +1,4 @@
-package lab.requests;
+package lab.server.requests;
 
 public class UnknownRequest {
     private final String command;

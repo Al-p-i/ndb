@@ -1,4 +1,4 @@
-package lab.requests;
+package lab.server.requests;
 
 public class GetRequest {
     private final String key;

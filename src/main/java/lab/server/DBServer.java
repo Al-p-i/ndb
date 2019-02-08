@@ -1,6 +1,6 @@
 package lab.server;
 
-import lab.requests.PutRequest;
+import lab.server.requests.PutRequest;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -13,7 +13,7 @@ public class DBServer {
 
     private final ForkJoinPool pool = new ForkJoinPool(4);
 
-    private final Database database = new Database();
+    private final Storage storage = new Storage();
 
     public void start(int portNumber) {
         ServerSocket serverSocket;
@@ -39,14 +39,27 @@ public class DBServer {
     }
 
     private void putSystemValues() {
-        database.put(new PutRequest("ndb_version", VERSION));
+        storage.put(new PutRequest("ndb_version", VERSION));
     }
 
     private void handle(Socket clientSocket) {
-        pool.execute(new ConnectionHandler(clientSocket, database));
+        pool.execute(new ConnectionHandler(clientSocket, storage));
     }
 
     public boolean isStarted() {
         return started;
+    }
+
+    public static void main(String[] args) {
+        int port;
+        if (args.length == 2) {
+            port = Integer.valueOf(args[1]);
+        } else {
+            port = 4444;
+        }
+        System.out.println("=== ndb server ===");
+        System.out.println("listening at " + port);
+        DBServer server = new DBServer();
+        server.start(port);
     }
 }

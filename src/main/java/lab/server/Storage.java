@@ -1,12 +1,12 @@
 package lab.server;
 
-import lab.requests.PutRequest;
-import lab.requests.DelRequest;
-import lab.requests.GetRequest;
+import lab.server.requests.PutRequest;
+import lab.server.requests.DelRequest;
+import lab.server.requests.GetRequest;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Database {
+public class Storage {
     private final ConcurrentHashMap<String, String> storage = new ConcurrentHashMap<>();
 
     public void put(PutRequest putRequest) {

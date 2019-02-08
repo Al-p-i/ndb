@@ -10,7 +10,7 @@ public class ConnectionHandler implements Runnable {
     private final Socket clientSocket;
     private final RequestParser requestParser;
 
-    public ConnectionHandler(Socket clientSocket, Database database) {
+    public ConnectionHandler(Socket clientSocket, Storage database) {
         this.clientSocket = clientSocket;
         requestParser = new RequestParser(database);
     }
@@ -34,9 +34,5 @@ public class ConnectionHandler implements Runnable {
                 e.printStackTrace();
             }
         }
-    }
-
-    private String parseLine(PrintWriter out, String line) {
-        return requestParser.parseLine(out, line);
     }
 }

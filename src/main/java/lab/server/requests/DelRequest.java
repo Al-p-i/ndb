@@ -1,4 +1,4 @@
-package lab.requests;
+package lab.server.requests;
 
 public class DelRequest {
     private final String key;

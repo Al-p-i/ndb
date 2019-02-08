@@ -1,9 +1,9 @@
 package lab.server;
 
-import lab.requests.DelRequest;
-import lab.requests.GetRequest;
-import lab.requests.PutRequest;
-import lab.requests.UnknownRequest;
+import lab.server.requests.DelRequest;
+import lab.server.requests.GetRequest;
+import lab.server.requests.PutRequest;
+import lab.server.requests.UnknownRequest;
 
 import java.io.PrintWriter;
 import java.util.regex.Matcher;
@@ -13,10 +13,10 @@ public class RequestParser {
     private static Pattern READ_PATTERN = Pattern.compile("^\\s*get\\s(\\w+)\\s*$");
     private static Pattern CREATE_PATTERN = Pattern.compile("^\\s*put\\s+(\\w+)\\s+(\\w+)\\s*$");
     private static Pattern DELETE_PATTERN = Pattern.compile("^\\s*del\\s+(\\w+)\\s*$");
-    private static Pattern UNKNOWN_COMMAND_PATTERN = Pattern.compile("^\\s*(\\w+)\\s.*$");
-    private final Database database;
+    private static Pattern UNKNOWN_COMMAND_PATTERN = Pattern.compile("^\\s*(\\w+)\\s*$");
+    private final Storage database;
 
-    public RequestParser(Database database) {
+    public RequestParser(Storage database) {
         this.database = database;
     }
 

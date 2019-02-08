@@ -6,8 +6,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DBClient {
+    private static Pattern EXIT_PATTERN = Pattern.compile("^\\s*(exit)\\s*$");
+
     private Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
@@ -52,17 +56,26 @@ public class DBClient {
         dbClient.startConnection(ip, port);
         Scanner stdin = new Scanner(System.in);
         requestVersion(dbClient);
+        System.out.print("> ");
         while (stdin.hasNextLine()) {
-            System.out.println(dbClient.sendMessage(stdin.nextLine()));
+            String line = stdin.nextLine();
+            if (isExit(line)) {
+                return;
+            }
+            System.out.println(dbClient.sendMessage(line));
             System.out.print("> ");
         }
+    }
+
+    private static boolean isExit(String line) {
+        Matcher matcher = EXIT_PATTERN.matcher(line);
+        return matcher.find();
     }
 
     private static void requestVersion(DBClient dbClient) {
         String ndbVersionRequest = "get ndb_version";
         System.out.println(ndbVersionRequest);
         System.out.println(dbClient.sendMessage(ndbVersionRequest));
-        System.out.print("> ");
     }
 
     public static void main(String[] args) {
