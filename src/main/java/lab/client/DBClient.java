@@ -9,7 +9,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DBClient {
+public class DBClient implements AutoCloseable {
     private static Pattern EXIT_PATTERN = Pattern.compile("^\\s*(exit)\\s*$");
 
     private Socket clientSocket;
@@ -41,17 +41,7 @@ public class DBClient {
         return resp;
     }
 
-    public void stopConnection() {
-        try {
-            in.close();
-            out.close();
-            clientSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void repl(String ip, int port) {
+    public static void repl(String ip, int port) {
         DBClient dbClient = new DBClient();
         dbClient.startConnection(ip, port);
         Scanner stdin = new Scanner(System.in);
@@ -70,6 +60,17 @@ public class DBClient {
     private static boolean isExit(String line) {
         Matcher matcher = EXIT_PATTERN.matcher(line);
         return matcher.find();
+    }
+
+    @Override
+    public void close() {
+        try {
+            in.close();
+            out.close();
+            clientSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void requestVersion(DBClient dbClient) {

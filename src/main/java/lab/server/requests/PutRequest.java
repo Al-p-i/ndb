@@ -1,6 +1,6 @@
 package lab.server.requests;
 
-public class PutRequest {
+public class PutRequest implements Request {
     private final String key;
     private final String value;
 

@@ -1,9 +1,6 @@
 package lab.server;
 
-import lab.server.requests.DelRequest;
-import lab.server.requests.GetRequest;
-import lab.server.requests.PutRequest;
-import lab.server.requests.UnknownRequest;
+import lab.server.requests.*;
 
 import java.io.PrintWriter;
 import java.util.regex.Matcher;
@@ -14,35 +11,36 @@ public class RequestParser {
     private static Pattern CREATE_PATTERN = Pattern.compile("^\\s*put\\s+(\\w+)\\s+(\\w+)\\s*$");
     private static Pattern DELETE_PATTERN = Pattern.compile("^\\s*del\\s+(\\w+)\\s*$");
     private static Pattern UNKNOWN_COMMAND_PATTERN = Pattern.compile("^\\s*(\\w+)\\s*$");
-    private final Storage database;
+    private static Pattern BEGIN_PATTERN = Pattern.compile("^\\s*begin\\s*$");
+    private static Pattern COMMIT_PATTERN = Pattern.compile("^\\s*commit\\s*$");
 
-    public RequestParser(Storage database) {
-        this.database = database;
-    }
 
-    String parseLine(PrintWriter out, String line) {
+    Request parseLine(String line) {
         GetRequest getRequest = parseRead(line);
         if (getRequest != null) {
-            return database.get(getRequest);
+            return getRequest;
         }
         PutRequest putRequest = parseCreate(line);
         if (putRequest != null) {
-            database.put(putRequest);
-            return putRequest.getKey() + " <= " + putRequest.getValue();
+            return putRequest;
         }
         DelRequest delRequest = parseDelete(line);
         if (delRequest != null) {
-            String deleted = database.del(delRequest);
-            if (deleted == null) {
-                out.println("no such key " + delRequest.getKey());
-            }
-            return "deleted " + delRequest.getKey();
+            return delRequest;
+        }
+        BeginRequest beginRequest = parseBegin(line);
+        if (beginRequest != null) {
+            return beginRequest;
+        }
+        CommitRequest commitRequest = parseCommit(line);
+        if (commitRequest != null) {
+            return commitRequest;
         }
         UnknownRequest unknownRequest = parseUnknown(line);
         if (unknownRequest != null) {
-            return "wrong command " + unknownRequest.getCommand();
+            return unknownRequest;
         }
-        return "syntactic error";
+        return null;
     }
 
     private DelRequest parseDelete(String request) {
@@ -76,4 +74,21 @@ public class RequestParser {
         }
         return null;
     }
+
+    private BeginRequest parseBegin(String request) {
+        Matcher matcher = BEGIN_PATTERN.matcher(request);
+        if (matcher.find()) {
+            return new BeginRequest();
+        }
+        return null;
+    }
+
+    private CommitRequest parseCommit(String request) {
+        Matcher matcher = COMMIT_PATTERN.matcher(request);
+        if (matcher.find()) {
+            return new CommitRequest();
+        }
+        return null;
+    }
+
 }

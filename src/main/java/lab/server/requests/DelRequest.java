@@ -1,6 +1,6 @@
 package lab.server.requests;
 
-public class DelRequest {
+public class DelRequest implements Request {
     private final String key;
 
     public DelRequest(String key) {

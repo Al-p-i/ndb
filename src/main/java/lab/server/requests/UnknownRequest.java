@@ -1,6 +1,6 @@
 package lab.server.requests;
 
-public class UnknownRequest {
+public class UnknownRequest implements Request {
     private final String command;
 
     public UnknownRequest(String command) {
