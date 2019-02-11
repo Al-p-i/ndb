@@ -15,8 +15,9 @@ public class DBServer {
 
     private final Storage storage = new Storage();
 
+    private volatile ServerSocket serverSocket;
+
     public void start(int portNumber) {
-        ServerSocket serverSocket;
         try {
             serverSocket = new ServerSocket(portNumber);
         } catch (IOException e) {
@@ -27,6 +28,9 @@ public class DBServer {
         started = true;
         System.out.println(DBServer.class.getName() + " started");
         while (true) {
+            if (Thread.currentThread().isInterrupted()) {
+                return;
+            }
             Socket clientSocket;
             try {
                 clientSocket = serverSocket.accept();
@@ -35,6 +39,14 @@ public class DBServer {
                 return;
             }
             handle(clientSocket);
+        }
+    }
+
+    public void stop() {
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
